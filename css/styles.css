@@ -1,0 +1,90 @@
+:root{
+    --color1: #0e0b16;
+    --color2: #a239ca;
+    --color3: #4717f6;
+    --color4: #e7dfdd;
+}
+body{
+    background-color: var(--color1);
+    color: var(--color4);
+}
+
+/* CSS for Registration Section */
+.cb{
+    border: 5px solid var(--color3);
+    border-radius: 15px;
+}
+.fb{
+    height: 50px;
+    width: 200px;
+    font-size: 20px;
+    background-color: var(--color2);
+    color: var(--color4);
+    border-color: var(--color3);
+}
+.fi{
+    width: 345px;
+    height: 40px;
+    margin-left: 10px;
+    background-color: #000000;
+    color: var(--color4);
+    border: 1px solid var(--color3);
+}
+.errorshow{
+    height: auto;
+    padding: 0%;
+    width: 97%;
+}
+.fl{
+    font-size: 20px;
+}
+::placeholder{
+    color: var(--color4);
+    opacity: 0.6;
+}
+
+/* CSS for ToDo List Section */
+#empty-list{
+    text-align: center;
+    font-size: 30px;
+}
+.nb{
+    height: 35px;
+    width: 150px;
+    font-size: 16px;
+    background-color: var(--color2);
+    color: var(--color4);
+    border-color: var(--color3);
+}
+.tdcon{
+    border: 5px solid var(--color2);
+    border-radius: 15px;
+}
+.list-item{
+    background-color: var(--color1);
+    color: var(--color4);
+    border-bottom: 2px solid var(--color3);
+}
+.list-btn{
+    background-color: var(--color2);
+}
+li:last-child{
+    border: none;
+}
+.hov{
+    transition: 0.5s;
+}
+.hov:hover{
+    background-color: #732c8f;
+}
+
+/* Modal CSS */
+.backmodel{
+    background-color: white;
+    opacity: 0.4;
+}
+.mainmodel{
+    background-color: var(--color4);
+    color: var(--color1);
+
+}

@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="shortcut icon" href="./img/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="./css/fcss/font-awesome.min.css">
+
+    <!-- Javascript -->
+    <script type="module" src="./js/main.js"></script>
+
+    <title>ToDo List using RTDB</title>
+</head>
+
+<body>
+    <!-- Registration Section -->
+    <div id="regi">
+        <!-- Heading of Section -->
+        <div class="container head text-center mt-4 mb-4" id="head1" style="max-width: 550px;">
+            <h1>Create Your Own ToDo List</h1>
+            <h3>Register First to create List&triangledown;</h3>
+        </div>
+        <!-- Registration Form -->
+
+        <div class="container cb" style="max-width: 420px;">
+            <span id="display-error" style="display: block;">
+                <!-- <div class="alert alert-danger" role="alert" style="height: 30px; padding-top: 0%;">
+                A simple danger alert—check it out!
+              </div> -->
+            </span>
+            <form action="#" method="post" id="register-form">
+                <!-- <div class="row p-3">
+                    <label for="uid" class="fl">Enter Id : </label>
+                    <input type="number" name="uid" id="uid" class="fi" placeholder="User ID" required>
+                    <span id="error-uid" style="margin-bottom: -35px;">
+                         <div class="alert alert-danger errorshow" role="alert">
+                            A simple danger alert—check it out!
+                        </div>
+                    </span>
+                </div> -->
+                <div class="row p-3">
+                    <label for="name" class="fl">Enter Name : </label>
+                    <input type="text" name="name" id="name" class="fi" placeholder="Name" required>
+                    <span id="error-name" style="margin-bottom: -35px;">
+                        <!-- <div class="alert alert-danger errorshow" role="alert">
+                            A simple danger alert—check it out!
+                        </div> -->
+                    </span>
+                </div>
+                <div class="row p-3">
+                    <label for="email" class="fl">Enter Email ID : </label>
+                    <input type="email" id="email" name="email" class="fi" placeholder="Email" required>
+                    <span id="error-email" style="margin-bottom: -35px;">
+                        <!-- <div class="alert alert-danger errorshow" role="alert">
+                            A simple danger alert—check it out!
+                        </div> -->
+                    </span>
+                </div>
+                <div class="row p-3">
+                    <label for="pwd" class="fl">Enter Password : </label>
+                    <input type="password" name="pwd" id="pwd" class="fi" placeholder="Password" required>
+                    <span id="error-pwd" style="margin-bottom: -35px;">
+                        <!-- <div class="alert alert-danger errorshow" role="alert">
+                            A simple danger alert—check it out!
+                        </div> -->
+                    </span>
+                </div>
+                <div class="row p-3">
+                    <label for="conpwd" class="fl">Confirm Password :</label>
+                    <input type="password" name="conpwd" id="conpwd" class="fi" placeholder="Confirm Password" required>
+                    <span id="error-conpwd" style="margin-bottom: -35px;">
+                        <!-- <div class="alert alert-danger errorshow" role="alert">
+                            A simple danger alert—check it out!
+                        </div> -->
+                    </span>
+                </div>
+
+                <div class="row p-3 justify-content-center">
+                    <input type="button" value="Register" class="fb" id="registerUser">
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- ToDo List Section -->
+    <div id="todos" style="display: none;">
+        <!-- Heading of ToDo section -->
+        <div class="container head text-center mt-4 mb-4" id="head2" style="max-width: 550px;">
+            <h1>Welcome <span id=input-name></span></h1>
+            <h3>Your ToDo List &triangledown;</h3>
+            <button class="nb" data-bs-toggle="modal" data-bs-target="#Add-item"> Add New Task</button>
+        </div>
+        <div id="empty-list" style="display: none;">Add Item to your List to display</div>
+
+        <!-- ToDo List -->
+        <div class="container tdcon" style="max-width: 700px;">
+            <ul class="list-group" id="todo-list">
+
+                <!-- <li id="item0" class="list-group-item d-flex justify-content-between align-items-start list-item">
+                <div class="ms-2 me-auto" style="max-width: 550px;">
+                    <div class="fw-bold fs-5" id="title0">Task 1</div>
+                    <span id="desc0">Description 1</span>
+                </div>
+                <div class="badge rounded-pill fs-5 list-btn hov" data-bs-toggle="modal" data-bs-target = "#edit-item" onclick="display_edit(0)">
+                    <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                </div>
+                <div class="badge rounded-pill fs-5 ms-3 list-btn hov" data-bs-toggle="modal" data-bs-target="#delete-item" onclick="display_delete(0)">
+                    <i class="fa fa-trash-o" aria-hidden="true"></i>
+                </div>
+            </li> -->
+            </ul>
+        </div>
+
+        <!-- Add Modal Section -->
+        <div class="modal fade" id="Add-item" tabindex="-1" aria-labelledby="addItemLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content mainmodel">
+                    <div class="modal-header">
+                        <h5 class="modal-title fs-4" id="addItemLabel">Add Item to List</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body fs-6">
+                        <form>
+                            <table>
+
+                                <input type="number" name="tno" id="tno" style="display: none;" required readonly>
+
+                                <tr>
+                                    <th class="text-end">
+                                        <label for="titlea">Title of Task :</label>
+                                    </th>
+                                    <td>
+                                        <input type="text" name="title" id="titlea" maxlength="50" value="" required>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="text-end"><label for="desca">Description of Task :</label></th>
+                                    <td><textarea name="desca" id="desca" cols="30" rows="2" value=""
+                                            maxlength="200"></textarea></td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                            id="addUserTask">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit item Modal -->
+        <div class="modal fade" id="edit-item" tabindex="-1" aria-labelledby="editItemLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content mainmodel">
+                    <div class="modal-header">
+                        <h5 class="modal-title fs-4" id="editItemLabel">Edit Item to List</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body fs-6">
+                        <form>
+                            <table>
+                                <tr>
+                                    <th class="text-end">
+                                        <label for="titlee">Title of Task :</label>
+                                        </td>
+                                    <td>
+                                        <input type="number" id="ide" readonly style="display: none;">
+                                        <input type="text" name="titlee" id="titlee" maxlength="50" required>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="text-end"><label for="desce">Description of Task :</label></td>
+                                    <td><textarea name="desce" id="desce" cols="30" rows="2"></textarea></td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                            id="addUserTask">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Modal -->
+        <div class="modal fade" id="delete-item" tabindex="-1" aria-labelledby="deleteItemLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content mainmodel">
+                    <div class="modal-header">
+                        <input type="number" id="idd" readonly style="display: none;">
+                        <h5 class="modal-title fs-4" id="deleteItemLabel">Do you want to Delete this item ?</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                            onclick="deleteItem()">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+
+    <!-- <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-analytics.js";
+        import { getDatabase, ref, set, child, get, onValue } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-database.js";
+
+
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyDjT20uemg2o3-vO-G3226x1POI0SsGJgU",
+            authDomain: "sample-project-ae235.firebaseapp.com",
+            databaseURL: "https://sample-project-ae235-default-rtdb.firebaseio.com",
+            projectId: "sample-project-ae235",
+            storageBucket: "sample-project-ae235.appspot.com",
+            messagingSenderId: "553746740022",
+            appId: "1:553746740022:web:add969c9303dc070267997",
+            measurementId: "G-TV840FF717"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const database = getDatabase(app);
+    </script> -->
+</body>
+
+</html>
