@@ -73,6 +73,7 @@ li:last-child{
 }
 .hov{
     transition: 0.5s;
+    cursor: pointer;
 }
 .hov:hover{
     background-color: #732c8f;

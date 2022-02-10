@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
-import { getDatabase, ref, set, remove, onValue } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-database.js";
+import { getDatabase, ref, get, remove, onValue, update, push, child } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-database.js";
 
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -125,7 +125,7 @@ document.getElementById('registerUser').addEventListener('click', (e) => {
 
 });
 
-let taskArr = [];
+let keyArr = [];
 let maxNo = 0;
 // const dbref = ref(database);
 // get(child(dbref, 'task')).then((snapshot) => {
@@ -141,14 +141,15 @@ let maxNo = 0;
 // For reload the list if changed
 const dbrefrt = ref(database, 'task');
 onValue(dbrefrt, (snapshot) => {
-    let arr = [];
+    keyArr = [];
     maxNo = 0;
+    console.log(snapshot.child('task/').key);
     document.getElementById('todo-list').innerHTML = "";
     snapshot.forEach(childss => {
         display_list(childss.val().id, childss.val().title, childss.val().task);
-        if (maxNo < childss.val().id) {
-            maxNo = childss.val().id;
-        }
+        keyArr.push(childss.key);
+        console.log(keyArr);
+        maxNo = keyArr.length;
     });
     console.log(`maxNo ${maxNo}`);
     if (maxNo === 0) {
@@ -161,17 +162,19 @@ document.getElementById('addUserTask').addEventListener('click', (e) => {
     e.preventDefault();
     document.getElementById('tno').value = maxNo + 1;
     const num = maxNo + 1;
+    console.log(maxNo);
     const titles = document.getElementById('titlea').value;
     const dec = document.getElementById('desca').value;
     if (num != "" && titles != "" && dec != "") {
-        document.getElementById('titlea').value = "";
-        document.getElementById('desca').value = "";
-        set(ref(database, 'task/' + num), {
+        //let addRef = database.ref('task/')
+        push(ref(database, 'task/'), {
             id: num,
             title: titles,
             task: dec
-        }).then(() => {
-            console.log("Task Added!!!");
+        }).then((res) => {
+            document.getElementById('titlea').value = "";
+            document.getElementById('desca').value = "";
+            console.log("Task Added!!!" + res.key);
             if (maxNo === 1) {
                 console.log(`maxNo ${maxNo}`);
                 document.getElementById('empty-list').style.display = "none";
@@ -207,17 +210,24 @@ document.getElementById('updateUserTask').addEventListener('click', (e) => {
     const dec = document.getElementById('desce').value;
     const id = document.getElementById('tnoe').value;
     if (id != "" && titles != "" && dec != "") {
-        set(ref(database, 'task/' + id), {
-            id: id,
-            title: titles,
-            task: dec
-        }).then(() => {
-            console.log("Task Updated!!!");
-            document.getElementById('titlee').value = "";
-            document.getElementById('desce').value = "";
-            document.getElementById('tnoe').value = "";
-        }).catch((error) => {
-            console.log(error);
+        const dbref = ref(database);
+        get(child(dbref, 'task')).then((snapshot) => {
+            snapshot.forEach(childss => {
+                if (childss.val().id == id) {
+                    update(ref(database, 'task/' + childss.key), {
+                        id: id,
+                        title: titles,
+                        task: dec
+                    }).then(() => {
+                        console.log("Task Updated!!!");
+                        document.getElementById('titlee').value = "";
+                        document.getElementById('desce').value = "";
+                        document.getElementById('tnoe').value = "";
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+                }
+            })
         });
     } else {
         return 0;
@@ -231,14 +241,22 @@ document.getElementById('deleteUserTask').addEventListener('click', (e) => {
     const id = document.getElementById('tnod').value;
 
     if (id != "") {
-        remove(ref(database, "task/" + id))
-            .then(() => {
-                console.log("Task Deleted!!!!!");
-                document.getElementById('tnod').value = "";
+        const dbref = ref(database);
+        get(child(dbref, 'task')).then((snapshot) => {
+            snapshot.forEach(childss => {
+                if (childss.val().id == id) {
+                    remove(ref(database, "task/" + childss.key))
+                        .then(() => {
+                            console.log("Task Deleted!!!!!");
+                            document.getElementById('tnod').value = "";
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                        })
+                }
             })
-            .catch((error) => {
-                console.log(error);
-            })
+        });
+
     }
     else {
         return 0;
@@ -248,8 +266,8 @@ document.getElementById('deleteUserTask').addEventListener('click', (e) => {
 
 window.display_edit = function (a) {
     document.getElementById('tnoe').value = a;
-    document.getElementById('titlee').value = document.getElementById('title'+a).innerText;
-    document.getElementById('desce').value = document.getElementById('desc'+a).innerText;
+    document.getElementById('titlee').value = document.getElementById('title' + a).innerText;
+    document.getElementById('desce').value = document.getElementById('desc' + a).innerText;
     console.log(`clicked!!!! with ${a}`);
 };
 
