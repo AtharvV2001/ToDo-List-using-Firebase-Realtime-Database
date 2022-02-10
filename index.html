@@ -97,6 +97,8 @@
             <h1>Welcome <span id=input-name></span></h1>
             <h3>Your ToDo List &triangledown;</h3>
             <button class="nb" data-bs-toggle="modal" data-bs-target="#Add-item"> Add New Task</button>
+            <!-- <button class="nb" data-bs-toggle="modal" data-bs-target="#edit-item">Edit Task</button>
+            <button class="nb" data-bs-toggle="modal" data-bs-target="#delete-item">Delete Task</button> -->
         </div>
         <div id="empty-list" style="display: none;">Add Item to your List to display</div>
 
@@ -169,17 +171,24 @@
                     <div class="modal-body fs-6">
                         <form>
                             <table>
+                                <tr style="display: none;">
+                                    <th class="text-end">
+                                        ID of Task to Update :
+                                    </th>
+                                    <td>
+                                        <input type="number" name="tnoe" id="tnoe" required readonly>
+                                    </td>
+                                </tr>
                                 <tr>
                                     <th class="text-end">
-                                        <label for="titlee">Title of Task :</label>
+                                        <label for="titlee">Updated Title of Task :</label>
                                         </td>
                                     <td>
-                                        <input type="number" id="ide" readonly style="display: none;">
                                         <input type="text" name="titlee" id="titlee" maxlength="50" required>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th class="text-end"><label for="desce">Description of Task :</label></td>
+                                    <th class="text-end"><label for="desce">Updated Description of Task :</label></td>
                                     <td><textarea name="desce" id="desce" cols="30" rows="2"></textarea></td>
                                 </tr>
                             </table>
@@ -188,7 +197,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
-                            id="addUserTask">Update</button>
+                            id="updateUserTask">Update</button>
                     </div>
                 </div>
             </div>
@@ -203,10 +212,13 @@
                         <h5 class="modal-title fs-4" id="deleteItemLabel">Do you want to Delete this item ?</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
+
+                    <input type="number" style="display: none;" name="tnod" id="tnod" required>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
-                            onclick="deleteItem()">Delete</button>
+                            id="deleteUserTask">Delete</button>
                     </div>
                 </div>
             </div>

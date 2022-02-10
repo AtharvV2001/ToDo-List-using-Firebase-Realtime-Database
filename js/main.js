@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
-import { getDatabase, ref, set, child, get, onValue } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-database.js";
+import { getDatabase, ref, set, remove, onValue } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-database.js";
 
 
 // TODO: Add SDKs for Firebase products that you want to use
@@ -136,16 +136,24 @@ let maxNo = 0;
 //     console.log(taskArr.length);
 // });
 //
+
+
+// For reload the list if changed
 const dbrefrt = ref(database, 'task');
 onValue(dbrefrt, (snapshot) => {
     let arr = [];
+    maxNo = 0;
     document.getElementById('todo-list').innerHTML = "";
     snapshot.forEach(childss => {
-        display_list(childss.val().id,childss.val().title,childss.val().task); 
-        if(maxNo<childss.val().id) {
+        display_list(childss.val().id, childss.val().title, childss.val().task);
+        if (maxNo < childss.val().id) {
             maxNo = childss.val().id;
-        }      
+        }
     });
+    console.log(`maxNo ${maxNo}`);
+    if (maxNo === 0) {
+        document.getElementById('empty-list').style.display = "block";
+    }
 });
 
 // Adding new item in list and displaying
@@ -159,11 +167,15 @@ document.getElementById('addUserTask').addEventListener('click', (e) => {
         document.getElementById('titlea').value = "";
         document.getElementById('desca').value = "";
         set(ref(database, 'task/' + num), {
-            id:num,
+            id: num,
             title: titles,
             task: dec
         }).then(() => {
             console.log("Task Added!!!");
+            if (maxNo === 1) {
+                console.log(`maxNo ${maxNo}`);
+                document.getElementById('empty-list').style.display = "none";
+            }
         }).catch((error) => {
             console.log(error);
         });
@@ -184,52 +196,64 @@ function display_list(a, b, c) {
     lc.id = "item" + a;
     let cl = ['list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'list-item']
     lc.classList.add(...cl);
-    lc.innerHTML = '<div class="ms-2 me-auto" style="max-width: 550px;"><span id="tid">' + a + '</span><div class="fw-bold fs-5" id="title' + a + '">' + b + '</div><span id="desc' + a + '">' + c + '</span></div><div class="badge rounded-pill fs-5 list-btn hov" data-bs-toggle="modal" data-bs-target="#edit-item" onclick="display_edit(' + a + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></div><div class="badge rounded-pill fs-5 ms-3 list-btn hov" data-bs-toggle="modal" data-bs-target="#delete-item" onclick="display_delete(' + a + ')"><i class="fa fa-trash-o" aria-hidden="true"></i></div>';
+    lc.innerHTML = '<div class="ms-2 me-auto" style="max-width: 550px;"><span id="tid" style="display: none">' + a + '</span><div class="fw-bold fs-5" id="title' + a + '">' + b + '</div><span id="desc' + a + '">' + c + '</span></div><div class="badge rounded-pill fs-5 list-btn hov" data-bs-toggle="modal" data-bs-target="#edit-item" onclick="display_edit(' + a + ')"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></div><div class="badge rounded-pill fs-5 ms-3 list-btn hov" data-bs-toggle="modal" data-bs-target="#delete-item" onclick="display_delete(' + a + ')"><i class="fa fa-trash-o" aria-hidden="true"></i></div>';
 }
 
 // Editing exsiting Item in list and displaying
-function display_edit(id) {
-    document.getElementById('ide').value = id
-    document.getElementById('titlee').value = myToDoList[id].title;
-    document.getElementById('desce').value = myToDoList[id].desc;
-}
 
-function editItem() {
+document.getElementById('updateUserTask').addEventListener('click', (e) => {
+    e.preventDefault();
     const titles = document.getElementById('titlee').value;
     const dec = document.getElementById('desce').value;
-    const id = document.getElementById('ide').value;
-    if (titles != "" && dec != "") {
-        myToDoList[id].title = titles;
-        myToDoList[id].desc = dec;
-
-        localStorage.setItem('ToDo-storage', JSON.stringify(myToDoList));
-
-        document.getElementById('title' + id).innerText = titles;
-        document.getElementById('desc' + id).innerText = dec;
+    const id = document.getElementById('tnoe').value;
+    if (id != "" && titles != "" && dec != "") {
+        set(ref(database, 'task/' + id), {
+            id: id,
+            title: titles,
+            task: dec
+        }).then(() => {
+            console.log("Task Updated!!!");
+            document.getElementById('titlee').value = "";
+            document.getElementById('desce').value = "";
+            document.getElementById('tnoe').value = "";
+        }).catch((error) => {
+            console.log(error);
+        });
     } else {
         return 0;
     }
 
-}
+});
 
 // Deleting exsiting Item from list and removing from display
-function display_delete(id) {
-    document.getElementById('idd').value = id;
-}
 
-function deleteItem() {
-    const id = Number.parseInt(document.getElementById('idd').value);
+document.getElementById('deleteUserTask').addEventListener('click', (e) => {
+    const id = document.getElementById('tnod').value;
 
-    let tempArr1 = myToDoList.slice(0, id);
-    let tempArr2 = myToDoList.slice(id + 1, myToDoList.length);
-
-    myToDoList = tempArr1.concat(tempArr2);
-
-    localStorage.setItem('ToDo-storage', JSON.stringify(myToDoList));
-
-    if (myToDoList.length == 0) {
-        document.getElementById('empty-list').style.display = "block";
+    if (id != "") {
+        remove(ref(database, "task/" + id))
+            .then(() => {
+                console.log("Task Deleted!!!!!");
+                document.getElementById('tnod').value = "";
+            })
+            .catch((error) => {
+                console.log(error);
+            })
     }
+    else {
+        return 0;
+    }
+});
 
-    showadel(myToDoList);
+
+window.display_edit = function (a) {
+    document.getElementById('tnoe').value = a;
+    document.getElementById('titlee').value = document.getElementById('title'+a).innerText;
+    document.getElementById('desce').value = document.getElementById('desc'+a).innerText;
+    console.log(`clicked!!!! with ${a}`);
+};
+
+window.display_delete = function (a) {
+    document.getElementById('tnod').value = a;
+    console.log(`clicked!!!! with ${a}`);
 }
