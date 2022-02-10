@@ -127,15 +127,6 @@ document.getElementById('registerUser').addEventListener('click', (e) => {
 
 let keyArr = [];
 let maxNo = 0;
-// const dbref = ref(database);
-// get(child(dbref, 'task')).then((snapshot) => {
-//     taskArr = snapshot.val();
-//     for (let index = 0; index < taskArr.length; index++) {
-//         display_list(index, taskArr[index].title, taskArr[index].task);
-//     }
-//     console.log(taskArr.length);
-// });
-//
 
 
 // For reload the list if changed
@@ -148,10 +139,12 @@ onValue(dbrefrt, (snapshot) => {
     snapshot.forEach(childss => {
         display_list(childss.val().id, childss.val().title, childss.val().task);
         keyArr.push(childss.key);
-        console.log(keyArr);
-        maxNo = keyArr.length;
+        //console.log(keyArr);
+        if(maxNo<childss.val().id){
+            maxNo = childss.val().id;
+        }
     });
-    console.log(`maxNo ${maxNo}`);
+    //console.log(`maxNo ${maxNo}`);
     if (maxNo === 0) {
         document.getElementById('empty-list').style.display = "block";
     }
@@ -166,7 +159,6 @@ document.getElementById('addUserTask').addEventListener('click', (e) => {
     const titles = document.getElementById('titlea').value;
     const dec = document.getElementById('desca').value;
     if (num != "" && titles != "" && dec != "") {
-        //let addRef = database.ref('task/')
         push(ref(database, 'task/'), {
             id: num,
             title: titles,
@@ -176,7 +168,6 @@ document.getElementById('addUserTask').addEventListener('click', (e) => {
             document.getElementById('desca').value = "";
             console.log("Task Added!!!" + res.key);
             if (maxNo === 1) {
-                console.log(`maxNo ${maxNo}`);
                 document.getElementById('empty-list').style.display = "none";
             }
         }).catch((error) => {
@@ -203,6 +194,13 @@ function display_list(a, b, c) {
 }
 
 // Editing exsiting Item in list and displaying
+
+window.display_edit = function (a) {
+    document.getElementById('tnoe').value = a;
+    document.getElementById('titlee').value = document.getElementById('title' + a).innerText;
+    document.getElementById('desce').value = document.getElementById('desc' + a).innerText;
+};
+
 
 document.getElementById('updateUserTask').addEventListener('click', (e) => {
     e.preventDefault();
@@ -237,6 +235,10 @@ document.getElementById('updateUserTask').addEventListener('click', (e) => {
 
 // Deleting exsiting Item from list and removing from display
 
+window.display_delete = function (a) {
+    document.getElementById('tnod').value = a;
+}
+
 document.getElementById('deleteUserTask').addEventListener('click', (e) => {
     const id = document.getElementById('tnod').value;
 
@@ -263,15 +265,3 @@ document.getElementById('deleteUserTask').addEventListener('click', (e) => {
     }
 });
 
-
-window.display_edit = function (a) {
-    document.getElementById('tnoe').value = a;
-    document.getElementById('titlee').value = document.getElementById('title' + a).innerText;
-    document.getElementById('desce').value = document.getElementById('desc' + a).innerText;
-    console.log(`clicked!!!! with ${a}`);
-};
-
-window.display_delete = function (a) {
-    document.getElementById('tnod').value = a;
-    console.log(`clicked!!!! with ${a}`);
-}
