@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
 import { getDatabase, ref, get, remove, onValue, update, push, child } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-database.js";
-
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.6.6/firebase-auth.js';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -22,8 +22,8 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
+const auth = getAuth();
 
-let id = 0
 
 // Function for Check Validation in Registration Form
 document.getElementById('registerUser').addEventListener('click', (e) => {
@@ -119,10 +119,35 @@ document.getElementById('registerUser').addEventListener('click', (e) => {
     if (mcn != 4) return 0;
 
     // If All Validation Checked
-    document.getElementById('input-name').innerText = iname;
-    document.getElementById('regi').style.display = "none";
-    document.getElementById('todos').style.display = "block";
+    // createUserWithEmailAndPassword(auth, iemail, ipwd)
+    //     .then((userCredential) => {
+    //         // Signed in 
+    //         const user = userCredential.user;
 
+    //         console.log(`Signed Up !!!!\n\n${user}\n\n\n${userCredential}`)
+    //     })
+    //     .catch((error) => {
+    //         const errorCode = error.code;
+    //         const errorMessage = error.message;
+    //         console.log(`ERROR~~~~~~~~~\n\n${errorCode} and ${errorMessage}`);
+    //     });
+
+    signInWithEmailAndPassword(auth, iemail, ipwd)
+        .then((userCredential) => {
+            // Signed in 
+            const user = userCredential.user;
+            console.log(`Signed Up !!!!\n\n${user}\n\n\n${userCredential}`)
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(`ERROR~~~~~~~~~\n\n${errorCode} and ${errorMessage}`);
+            if (errorCode != 'auth/wrong-password') {
+                document.getElementById('input-name').innerText = iname;
+                document.getElementById('regi').style.display = "none";
+                document.getElementById('todos').style.display = "block";
+            }
+        });
 });
 
 let keyArr = [];
@@ -140,7 +165,7 @@ onValue(dbrefrt, (snapshot) => {
         display_list(childss.val().id, childss.val().title, childss.val().task);
         keyArr.push(childss.key);
         //console.log(keyArr);
-        if(maxNo<childss.val().id){
+        if (maxNo < childss.val().id) {
             maxNo = childss.val().id;
         }
     });
