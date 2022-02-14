@@ -20,21 +20,50 @@
 </head>
 
 <body>
+    <div id="log">
+        <div class="container head text-center mt-4 mb-4" id="head1" style="max-width: 550px;">
+            <h1>Login to Your ToDo List</h1>
+            <h3>Want to create new list? <span id="regiYes"
+                    class="badge rounded-pill bg-primary">Yes</span>&triangleleft;</h3>
+        </div>
+        <div class="container cb" style="max-width: 420px;">
+            <form action="#" method="post" id="log-form">
+                <div class="row p-3">
+                    <label for="emaill" class="fl">Enter Email ID : </label>
+                    <input type="email" name="emaill" id="emaill" class="fi" placeholder="Email" required>
+                    <span id="error-emaill" style="margin-bottom: -35px;">
+                        <!-- <div class="alert alert-danger errorshow" role="alert">
+                            A simple danger alert—check it out!
+                        </div> -->
+                    </span>
+                </div>
+                <div class="row p-3">
+                    <label for="pwdl" class="fl">Enter Password : </label>
+                    <input type="password" id="pwdl" name="pwdl" class="fi" placeholder="Password" required>
+                    <span id="error-pwdl" style="margin-bottom: -35px;">
+                        <!-- <div class="alert alert-danger errorshow" role="alert">
+                            A simple danger alert—check it out!
+                        </div> -->
+                    </span>
+                </div>
+                <div class="row p-3 justify-content-center">
+                    <input type="button" value="Log In" class="fb" id="logUser">
+                </div>
+            </form>
+        </div>
+    </div>
     <!-- Registration Section -->
-    <div id="regi">
+    <div id="regi" style="display: none;">
         <!-- Heading of Section -->
         <div class="container head text-center mt-4 mb-4" id="head1" style="max-width: 550px;">
             <h1>Create Your Own ToDo List</h1>
-            <h3>Register First to create List&triangledown;</h3>
+            <h3>Already created  list? <span id="logYes"
+                class="badge rounded-pill bg-primary">Yes</span>&triangleleft;</h3>
+            <h3>Register First to create List &triangledown;</h3>
         </div>
         <!-- Registration Form -->
 
         <div class="container cb" style="max-width: 420px;">
-            <span id="display-error" style="display: block;">
-                <!-- <div class="alert alert-danger" role="alert" style="height: 30px; padding-top: 0%;">
-                A simple danger alert—check it out!
-              </div> -->
-            </span>
             <form action="#" method="post" id="register-form">
                 <!-- <div class="row p-3">
                     <label for="uid" class="fl">Enter Id : </label>
@@ -47,7 +76,7 @@
                 </div> -->
                 <div class="row p-3">
                     <label for="name" class="fl">Enter Name : </label>
-                    <input type="text" name="name" id="name" class="fi" placeholder="Name" required>
+                    <input type="text" name="name" id="name" class="fi" placeholder="Name" value="" required>
                     <span id="error-name" style="margin-bottom: -35px;">
                         <!-- <div class="alert alert-danger errorshow" role="alert">
                             A simple danger alert—check it out!
@@ -56,7 +85,7 @@
                 </div>
                 <div class="row p-3">
                     <label for="email" class="fl">Enter Email ID : </label>
-                    <input type="email" id="email" name="email" class="fi" placeholder="Email" required>
+                    <input type="email" id="email" name="email" class="fi" placeholder="Email" value="" required>
                     <span id="error-email" style="margin-bottom: -35px;">
                         <!-- <div class="alert alert-danger errorshow" role="alert">
                             A simple danger alert—check it out!
@@ -65,7 +94,7 @@
                 </div>
                 <div class="row p-3">
                     <label for="pwd" class="fl">Enter Password : </label>
-                    <input type="password" name="pwd" id="pwd" class="fi" placeholder="Password" required>
+                    <input type="password" name="pwd" id="pwd" class="fi" placeholder="Password" value="" required>
                     <span id="error-pwd" style="margin-bottom: -35px;">
                         <!-- <div class="alert alert-danger errorshow" role="alert">
                             A simple danger alert—check it out!
@@ -74,7 +103,7 @@
                 </div>
                 <div class="row p-3">
                     <label for="conpwd" class="fl">Confirm Password :</label>
-                    <input type="password" name="conpwd" id="conpwd" class="fi" placeholder="Confirm Password" required>
+                    <input type="password" name="conpwd" id="conpwd" class="fi" placeholder="Confirm Password" value="" required>
                     <span id="error-conpwd" style="margin-bottom: -35px;">
                         <!-- <div class="alert alert-danger errorshow" role="alert">
                             A simple danger alert—check it out!
@@ -94,9 +123,10 @@
     <div id="todos" style="display: none;">
         <!-- Heading of ToDo section -->
         <div class="container head text-center mt-4 mb-4" id="head2" style="max-width: 550px;">
-            <h1>Welcome <span id=input-name></span></h1>
+            <h1>Welcome <span id='input-name'></span></h1>
             <h3>Your ToDo List &triangledown;</h3>
             <button class="nb" data-bs-toggle="modal" data-bs-target="#Add-item"> Add New Task</button>
+            <button class="nb" id="logout"> Log Out</button>
             <!-- <button class="nb" data-bs-toggle="modal" data-bs-target="#edit-item">Edit Task</button>
             <button class="nb" data-bs-toggle="modal" data-bs-target="#delete-item">Delete Task</button> -->
         </div>
@@ -231,34 +261,6 @@
         integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
         crossorigin="anonymous"></script>
 
-    <!-- <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-analytics.js";
-        import { getDatabase, ref, set, child, get, onValue } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-database.js";
-
-
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
-
-        // Your web app's Firebase configuration
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-        const firebaseConfig = {
-            apiKey: "AIzaSyDjT20uemg2o3-vO-G3226x1POI0SsGJgU",
-            authDomain: "sample-project-ae235.firebaseapp.com",
-            databaseURL: "https://sample-project-ae235-default-rtdb.firebaseio.com",
-            projectId: "sample-project-ae235",
-            storageBucket: "sample-project-ae235.appspot.com",
-            messagingSenderId: "553746740022",
-            appId: "1:553746740022:web:add969c9303dc070267997",
-            measurementId: "G-TV840FF717"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const database = getDatabase(app);
-    </script> -->
 </body>
 
 </html>

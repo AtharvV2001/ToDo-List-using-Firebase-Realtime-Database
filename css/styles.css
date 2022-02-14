@@ -9,6 +9,13 @@ body{
     color: var(--color4);
 }
 
+/* Log CSS */
+#regiYes:hover{
+    cursor: pointer;
+}
+#logYes:hover{
+    cursor: pointer;
+}
 /* CSS for Registration Section */
 .cb{
     border: 5px solid var(--color3);

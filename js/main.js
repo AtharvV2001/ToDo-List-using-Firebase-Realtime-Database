@@ -1,7 +1,20 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
-import { getDatabase, ref, get, remove, onValue, update, push, child } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-database.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.6.6/firebase-auth.js';
+import { getDatabase,
+    ref, 
+    get, 
+    remove, 
+    onValue, 
+    update, 
+    push, 
+    child } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-database.js";
+import { 
+    getAuth, 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword, 
+    onAuthStateChanged,
+    signOut,
+    updateProfile } from 'https://www.gstatic.com/firebasejs/9.6.6/firebase-auth.js';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -23,6 +36,91 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 const auth = getAuth();
+
+let logUserID;
+
+
+// Toggel between Login and Signup
+document.getElementById('regiYes').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('log').style.display = "none";
+    document.getElementById('regi').style.display = "block";
+})
+document.getElementById('logYes').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('log').style.display = "block";
+    document.getElementById('regi').style.display = "none";
+})
+
+// Check Auth status of user
+onAuthStateChanged(auth, user => {
+    if (user) {
+        console.log('user logged in: ', user);
+        document.getElementById('log').style.display = "none";
+        document.getElementById('regi').style.display = "none";
+        document.getElementById('todos').style.display = "block";
+        document.getElementById('input-name').innerText = user.displayName;
+        logUserID = user.uid;
+        console.log(logUserID);
+    } else {
+        console.log('user logged out');
+
+    }
+})
+
+
+// Function to Log User in
+document.getElementById('logUser').addEventListener('click', (e) => {
+    e.preventDefault();
+    let ipwd = document.getElementById('pwdl').value;
+    let iemail = document.getElementById('emaill').value;
+    let ncn = 0, ecn = 0, pcn = 0, cpcn = 0, mcn = 0;
+
+    // Check for email field
+    let regexForEmail = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$/;
+    if (iemail == "") {
+        document.getElementById('error-emaill').innerHTML = '<div class="alert alert-danger errorshow" role="alert">Please fill this field</div>';
+        ecn = 1;
+    }
+    if (!regexForEmail.test(iemail) && ecn != 1) {
+        document.getElementById('error-emaill').innerHTML = '<div class="alert alert-danger errorshow" role="alert">Enter vaild Email ID</div>';
+    }
+    if (regexForEmail.test(iemail) && ecn != 1) {
+        document.getElementById('error-emaill').innerHTML = "";
+        mcn++;
+    }
+
+    if (ipwd == "") {
+        document.getElementById('error-pwdl').innerHTML = '<div class="alert alert-danger errorshow" role="alert">Please fill this field</div>';
+        pcn = 1;
+    }
+    if (pcn != 1) {
+        document.getElementById('error-pwdl').innerHTML = "";
+        mcn++;
+    }
+
+    if (mcn != 2) return 0;
+
+
+    signInWithEmailAndPassword(auth, iemail, ipwd)
+        .then((userCredential) => {
+            // Signed in 
+            const user = userCredential.user;
+            document.getElementById('log').style.display = "none";
+            document.getElementById('todos').style.display = "block";
+            console.log(`Signed Up !!!!\n\n${user}\n\n\n${userCredential}`)
+            logUserID = user.uid;
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(`ERROR~~~~~~~~~\n\n${errorCode} and ${errorMessage}`);
+            if (errorCode != 'auth/wrong-password') {
+                document.getElementById('error-pwdl').innerHTML = '<div class="alert alert-danger errorshow" role="alert">Worng Password</div>';
+            }
+        });
+
+})
 
 
 // Function for Check Validation in Registration Form
@@ -119,36 +217,39 @@ document.getElementById('registerUser').addEventListener('click', (e) => {
     if (mcn != 4) return 0;
 
     // If All Validation Checked
-    // createUserWithEmailAndPassword(auth, iemail, ipwd)
-    //     .then((userCredential) => {
-    //         // Signed in 
-    //         const user = userCredential.user;
-
-    //         console.log(`Signed Up !!!!\n\n${user}\n\n\n${userCredential}`)
-    //     })
-    //     .catch((error) => {
-    //         const errorCode = error.code;
-    //         const errorMessage = error.message;
-    //         console.log(`ERROR~~~~~~~~~\n\n${errorCode} and ${errorMessage}`);
-    //     });
-
-    signInWithEmailAndPassword(auth, iemail, ipwd)
+    createUserWithEmailAndPassword(auth, iemail, ipwd)
         .then((userCredential) => {
             // Signed in 
             const user = userCredential.user;
-            console.log(`Signed Up !!!!\n\n${user}\n\n\n${userCredential}`)
+            document.getElementById('input-name').innerText = iname;
+            document.getElementById('regi').style.display = "none";
+            document.getElementById('todos').style.display = "block";
+            updateProfile(auth.currentUser,{ displayName: iname }).then((e)=>{
+                console.log(e);
+            }).catch(
+                (err) => console.log(err)
+              );
+            console.log(`Signed Up !!!!\n\n${JSON.stringify(user)}\n\n\n${userCredential}`);
+            logUserID = user.uid;
         })
         .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
             console.log(`ERROR~~~~~~~~~\n\n${errorCode} and ${errorMessage}`);
-            if (errorCode != 'auth/wrong-password') {
-                document.getElementById('input-name').innerText = iname;
-                document.getElementById('regi').style.display = "none";
-                document.getElementById('todos').style.display = "block";
-            }
         });
 });
+console.log(logUserID);
+
+document.getElementById('logout').addEventListener('click', e => {
+    e.preventDefault();
+    signOut(auth).then(() => {
+        document.getElementById('log').style.display = "block";
+        document.getElementById('todos').style.display = "none";
+        logUserID = "";
+    }).catch((error) => {
+        console.log(`ERROR ~~~~~~~~~~~~~~~~~~~~${error}`);
+    });
+})
 
 let keyArr = [];
 let maxNo = 0;
