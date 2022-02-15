@@ -35,13 +35,16 @@ const firebaseConfig = {
     measurementId: "G-TV840FF717"
 };
 
+let keyArr = [];
+let maxNo = 0;
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 const auth = getAuth();
 
 let logUserID;
-
+  
 
 // Toggel between Login and Signup
 document.getElementById('regiYes').addEventListener('click', (e) => {
@@ -64,22 +67,6 @@ onAuthStateChanged(auth, user => {
         document.getElementById('todos').style.display = "block";
         document.getElementById('input-name').innerText = user.displayName;
         logUserID = user.uid;
-        // const dbref = ref(database);
-        //     get(child(dbref, 'task')).then((snapshot) => {
-        //         snapshot.forEach(childssp => {
-        //             console.log(childssp.key == logUserID);
-        //             if (childssp.key == logUserID) {
-        //                 childssp.forEach(childss => {
-        //                     display_list(childss.val().id, childss.val().title, childss.val().task);
-        //                     keyArr.push(childss.key);
-        //                     //console.log(keyArr);
-        //                     if (maxNo < childss.val().id) {
-        //                         maxNo = childss.val().id;
-        //                     }
-        //                 })
-        //             }
-        //         })
-        //     })
     } else {
         console.log('user logged out');
 
@@ -127,6 +114,7 @@ document.getElementById('logUser').addEventListener('click', (e) => {
             document.getElementById('todos').style.display = "block";
             console.log(`Signed Up !!!!\n\n${user}\n\n\n${userCredential}`)
             logUserID = user.uid;
+            location.reload();
         })
         .catch((error) => {
             const errorCode = error.code;
@@ -248,6 +236,8 @@ document.getElementById('registerUser').addEventListener('click', (e) => {
             );
             console.log(`Signed Up !!!!\n\n${JSON.stringify(user)}\n\n\n${userCredential}`);
             logUserID = user.uid;
+            
+            location.reload();
         })
         .catch((error) => {
             const errorCode = error.code;
@@ -267,8 +257,7 @@ document.getElementById('logout').addEventListener('click', e => {
     });
 })
 
-let keyArr = [];
-let maxNo = 0;
+
 
 
 // For reload the list if changed
@@ -300,8 +289,8 @@ onValue(dbrefrt, (snapshotp) => {
 // Adding new item in list and displaying
 document.getElementById('addUserTask').addEventListener('click', (e) => {
     e.preventDefault();
-    document.getElementById('tno').value = maxNo + 1;
-    const num = maxNo + 1;
+    document.getElementById('tno').value = Number.parseInt(maxNo) + 1;
+    const num = Number.parseInt(maxNo) + 1;
     console.log(maxNo);
     const titles = document.getElementById('titlea').value;
     const dec = document.getElementById('desca').value;
