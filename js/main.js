@@ -1,20 +1,23 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-app.js";
-import { getDatabase,
-    ref, 
-    get, 
-    remove, 
-    onValue, 
-    update, 
-    push, 
-    child } from "https://www.gstatic.com/firebasejs/9.6.6/firebase-database.js";
-import { 
-    getAuth, 
-    createUserWithEmailAndPassword, 
-    signInWithEmailAndPassword, 
+import {
+    getDatabase,
+    ref,
+    get,
+    remove,
+    onValue,
+    update,
+    push,
+    child
+} from "https://www.gstatic.com/firebasejs/9.6.6/firebase-database.js";
+import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
     onAuthStateChanged,
     signOut,
-    updateProfile } from 'https://www.gstatic.com/firebasejs/9.6.6/firebase-auth.js';
+    updateProfile
+} from 'https://www.gstatic.com/firebasejs/9.6.6/firebase-auth.js';
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -61,13 +64,27 @@ onAuthStateChanged(auth, user => {
         document.getElementById('todos').style.display = "block";
         document.getElementById('input-name').innerText = user.displayName;
         logUserID = user.uid;
-        console.log(logUserID);
+        // const dbref = ref(database);
+        //     get(child(dbref, 'task')).then((snapshot) => {
+        //         snapshot.forEach(childssp => {
+        //             console.log(childssp.key == logUserID);
+        //             if (childssp.key == logUserID) {
+        //                 childssp.forEach(childss => {
+        //                     display_list(childss.val().id, childss.val().title, childss.val().task);
+        //                     keyArr.push(childss.key);
+        //                     //console.log(keyArr);
+        //                     if (maxNo < childss.val().id) {
+        //                         maxNo = childss.val().id;
+        //                     }
+        //                 })
+        //             }
+        //         })
+        //     })
     } else {
         console.log('user logged out');
 
     }
 })
-
 
 // Function to Log User in
 document.getElementById('logUser').addEventListener('click', (e) => {
@@ -224,11 +241,11 @@ document.getElementById('registerUser').addEventListener('click', (e) => {
             document.getElementById('input-name').innerText = iname;
             document.getElementById('regi').style.display = "none";
             document.getElementById('todos').style.display = "block";
-            updateProfile(auth.currentUser,{ displayName: iname }).then((e)=>{
+            updateProfile(auth.currentUser, { displayName: iname }).then((e) => {
                 console.log(e);
             }).catch(
                 (err) => console.log(err)
-              );
+            );
             console.log(`Signed Up !!!!\n\n${JSON.stringify(user)}\n\n\n${userCredential}`);
             logUserID = user.uid;
         })
@@ -238,7 +255,6 @@ document.getElementById('registerUser').addEventListener('click', (e) => {
             console.log(`ERROR~~~~~~~~~\n\n${errorCode} and ${errorMessage}`);
         });
 });
-console.log(logUserID);
 
 document.getElementById('logout').addEventListener('click', e => {
     e.preventDefault();
@@ -257,20 +273,25 @@ let maxNo = 0;
 
 // For reload the list if changed
 const dbrefrt = ref(database, 'task');
-onValue(dbrefrt, (snapshot) => {
+onValue(dbrefrt, (snapshotp) => {
     keyArr = [];
     maxNo = 0;
-    console.log(snapshot.child('task/').key);
+    console.log(snapshotp.val());
     document.getElementById('todo-list').innerHTML = "";
-    snapshot.forEach(childss => {
-        display_list(childss.val().id, childss.val().title, childss.val().task);
-        keyArr.push(childss.key);
-        //console.log(keyArr);
-        if (maxNo < childss.val().id) {
-            maxNo = childss.val().id;
+    snapshotp.forEach(childssp => {
+        console.log(childssp.key == logUserID)
+        if (childssp.key == logUserID) {
+            childssp.forEach(childss => {
+                display_list(childss.val().id, childss.val().title, childss.val().task);
+                keyArr.push(childss.key);
+                //console.log(keyArr);
+                if (maxNo < childss.val().id) {
+                    maxNo = childss.val().id;
+                }
+            });
         }
-    });
-    //console.log(`maxNo ${maxNo}`);
+
+    })
     if (maxNo === 0) {
         document.getElementById('empty-list').style.display = "block";
     }
@@ -285,7 +306,7 @@ document.getElementById('addUserTask').addEventListener('click', (e) => {
     const titles = document.getElementById('titlea').value;
     const dec = document.getElementById('desca').value;
     if (num != "" && titles != "" && dec != "") {
-        push(ref(database, 'task/'), {
+        push(ref(database, 'task/' + logUserID), {
             id: num,
             title: titles,
             task: dec
@@ -336,19 +357,24 @@ document.getElementById('updateUserTask').addEventListener('click', (e) => {
     if (id != "" && titles != "" && dec != "") {
         const dbref = ref(database);
         get(child(dbref, 'task')).then((snapshot) => {
-            snapshot.forEach(childss => {
-                if (childss.val().id == id) {
-                    update(ref(database, 'task/' + childss.key), {
-                        id: id,
-                        title: titles,
-                        task: dec
-                    }).then(() => {
-                        console.log("Task Updated!!!");
-                        document.getElementById('titlee').value = "";
-                        document.getElementById('desce').value = "";
-                        document.getElementById('tnoe').value = "";
-                    }).catch((error) => {
-                        console.log(error);
+            snapshot.forEach(childssp => {
+                console.log(childssp.key == logUserID);
+                if (childssp.key == logUserID) {
+                    childssp.forEach(childss => {
+                        if (childss.val().id == id) {
+                            update(ref(database, 'task/' + logUserID + '/' + childss.key), {
+                                id: id,
+                                title: titles,
+                                task: dec
+                            }).then(() => {
+                                console.log("Task Updated!!!");
+                                document.getElementById('titlee').value = "";
+                                document.getElementById('desce').value = "";
+                                document.getElementById('tnoe').value = "";
+                            }).catch((error) => {
+                                console.log(error);
+                            });
+                        }
                     });
                 }
             })
@@ -371,16 +397,21 @@ document.getElementById('deleteUserTask').addEventListener('click', (e) => {
     if (id != "") {
         const dbref = ref(database);
         get(child(dbref, 'task')).then((snapshot) => {
-            snapshot.forEach(childss => {
-                if (childss.val().id == id) {
-                    remove(ref(database, "task/" + childss.key))
-                        .then(() => {
-                            console.log("Task Deleted!!!!!");
-                            document.getElementById('tnod').value = "";
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                        })
+            snapshot.forEach(childssp => {
+                console.log(childssp.key == logUserID);
+                if (childssp.key == logUserID) {
+                    childssp.forEach(childss => {
+                        if (childss.val().id == id) {
+                            remove(ref(database, "task/" + logUserID + '/' + childss.key))
+                                .then(() => {
+                                    console.log("Task Deleted!!!!!");
+                                    document.getElementById('tnod').value = "";
+                                })
+                                .catch((error) => {
+                                    console.log(error);
+                                })
+                        }
+                    });
                 }
             })
         });
